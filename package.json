@@ -1,0 +1,8 @@
+{
+  "name": "less02",
+  "version": "1.0.0",
+  "description": "IT-incubator home work2",
+  "main": "index.js",
+  "author": "Sergey Yurchenko <sergey.yurchenko.art@gmail.com>",
+  "license": "MIT"
+}
