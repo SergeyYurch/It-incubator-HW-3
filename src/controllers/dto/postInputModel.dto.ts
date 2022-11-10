@@ -1,4 +1,4 @@
-export type PostInputModelDto = {
+export interface PostInputModelDto {
     title:string;
     shortDescription:string;
     content: string;

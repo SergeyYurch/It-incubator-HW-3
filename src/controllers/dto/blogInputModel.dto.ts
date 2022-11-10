@@ -1,4 +1,4 @@
-export type BlogInputModelDto = {
+export interface BlogInputModelDto {
     name:string;
     youtubeUrl:string;
 }

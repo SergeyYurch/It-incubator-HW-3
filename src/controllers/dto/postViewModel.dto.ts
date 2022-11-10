@@ -1,4 +1,4 @@
-export type PostViewModelDto = {
+export interface PostViewModelDto {
     id:string;
     title:string;
     shortDescription:string;
