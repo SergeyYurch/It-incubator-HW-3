@@ -1,5 +1,4 @@
 import {Router, Request, Response, NextFunction} from "express";
-import {authGuardMiddleware} from "../middlewares/authGuard.middleware";
 
 export const blogsRouter = Router();
 
