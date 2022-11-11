@@ -1,54 +1,80 @@
-import {PostInputModelDto} from "../controllers/dto/postInputModel.dto";
-import {BlogInputModelDto} from "../controllers/dto/blogInputModel.dto";
-import { v4 as uuidv4 } from 'uuid';
-
-export interface PostInDataBaseDto extends PostInputModelDto {
-    id:string
-}
-
-export interface BlogInDataBaseDto extends BlogInputModelDto {
-    id:string
-}
-
-interface DataBaseType {
-    posts: PostInDataBaseDto[];
-    blogs: BlogInDataBaseDto[];
-};
+import {v4 as uuidv4} from 'uuid';
+import {PostEntity} from "../services/entities/post.entity";
+import {BlogEntity} from "../services/entities/blog.entity";
+import {
+    BlogDbInterface,
+    DataBaseType,
+    PostDbInterface,
+    RepositoryInterface
+} from "./repository.interface";
 
 const dataBase: DataBaseType = {
-    posts:[],
-    blogs:[]
+    posts: [],
+    blogs: []
 };
 
-export const dataBaseClear = () => {
-    dataBase.posts = [];
-    dataBase.blogs=[];
-};
+export const repository:RepositoryInterface =
+    {
+        dataBaseClear: (): boolean => {
+            dataBase.posts = [];
+            dataBase.blogs = [];
+            return true;
+        },
 
-const {posts, blogs} = dataBase;
+        returnAllBlogs: (): BlogDbInterface[] => {
+            return dataBase.blogs;
+        },
 
-export const returnAllBlogs = ()=> {
-    return blogs;
-};
+        createNewBlog: (inputBlog: BlogEntity): BlogDbInterface => {
+            const id: string = uuidv4();
+            const newBlog: BlogDbInterface = {
+                id,
+                name: inputBlog.name,
+                youtubeUrl: inputBlog.youtubeUrl,
+                dateAt: inputBlog.dateAt
+            };
+            dataBase.blogs.push(newBlog);
+            return newBlog;
+        },
 
-export const createNewBlog = (inputBlog:BlogInputModelDto):BlogInDataBaseDto=> {
-    const id:string = uuidv4();
-    const blogToDataBase:BlogInDataBaseDto = {
-        id,
-        name: inputBlog.name,
-        youtubeUrl: inputBlog.youtubeUrl
-    }
-    blogs.push(blogToDataBase);
-    return blogToDataBase;
-};
-export const returnBlogById = (id:string)=> {
+        returnBlogById: (id: string): BlogDbInterface | undefined => {
+            return dataBase.blogs.find(b => b.id === id);
+        },
 
-};
-export const updateBlogById = (id:string, inputBlog:BlogInputModelDto)=> {};
-export const deleteBlogById = (id:string)=> {};
+        updateBlogById: (id: string, inputBlog: BlogEntity): boolean => {
+            const newBlog:BlogDbInterface ={id, ...inputBlog};
+            dataBase.blogs = dataBase.blogs.map(b => b.id === id ? newBlog : b);
+            return true;
+        },
 
-export const returnAllPosts = ()=> {};
-export const createNewPost = ()=> {};
-export const returnPostById = (id:string)=> {};
-export const updatePostById = (id:string, inputPost:PostInputModelDto)=> {};
-export const deletePostById = (id:string)=> {};
+        deleteBlogById: (id: string):boolean => {
+            dataBase.blogs = dataBase.blogs.filter(b => b.id !== id);
+            return true;
+        },
+
+        returnAllPosts: (): PostDbInterface[] => {
+            return dataBase.posts;
+        },
+
+        createNewPost: (inputPost: PostEntity): PostDbInterface => {
+            const id: string = uuidv4();
+            const newPost: PostDbInterface = {id, ...inputPost};
+            dataBase.posts.push(newPost);
+            return newPost;
+        },
+
+        returnPostById: (id: string): PostDbInterface | undefined => {
+            return dataBase.posts.find(p => p.id === id);
+        },
+
+        updatePostById: (id: string, inputPost: PostEntity): boolean => {
+            const newPost: PostDbInterface = {id, ...inputPost};
+            dataBase.posts = dataBase.posts.map(p => p.id === id ? newPost : p);
+            return true;
+        },
+
+        deletePostById: (id: string): boolean => {
+            dataBase.posts = dataBase.posts.filter(p => p.id !== id);
+            return true;
+        }
+    };
