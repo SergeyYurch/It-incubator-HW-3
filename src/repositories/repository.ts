@@ -8,12 +8,12 @@ import {
     RepositoryInterface
 } from "./repository.interface";
 
-const dataBase: DataBaseType = {
+export const dataBase: DataBaseType = {
     posts: [],
     blogs: []
 };
 
-export const repository:RepositoryInterface =
+export const repository: RepositoryInterface =
     {
         dataBaseClear: (): boolean => {
             dataBase.posts = [];
@@ -25,7 +25,7 @@ export const repository:RepositoryInterface =
             return dataBase.blogs;
         },
 
-        createNewBlog: (inputBlog: BlogEntity): BlogDbInterface => {
+        createNewBlog: (inputBlog: BlogEntity): BlogDbInterface  => {
             const id: string = uuidv4();
             const newBlog: BlogDbInterface = {
                 id,
@@ -42,12 +42,12 @@ export const repository:RepositoryInterface =
         },
 
         updateBlogById: (id: string, inputBlog: BlogEntity): boolean => {
-            const newBlog:BlogDbInterface ={id, ...inputBlog};
+            const newBlog: BlogDbInterface = {id, ...inputBlog};
             dataBase.blogs = dataBase.blogs.map(b => b.id === id ? newBlog : b);
             return true;
         },
 
-        deleteBlogById: (id: string):boolean => {
+        deleteBlogById: (id: string): boolean => {
             dataBase.blogs = dataBase.blogs.filter(b => b.id !== id);
             return true;
         },
@@ -56,7 +56,7 @@ export const repository:RepositoryInterface =
             return dataBase.posts;
         },
 
-        createNewPost: (inputPost: PostEntity): PostDbInterface => {
+        createNewPost: (inputPost: PostEntity): PostDbInterface  => {
             const id: string = uuidv4();
             const newPost: PostDbInterface = {id, ...inputPost};
             dataBase.posts.push(newPost);
