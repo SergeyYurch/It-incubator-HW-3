@@ -4,7 +4,7 @@ import { body } from 'express-validator';
      validateBlogInputModel: ()=> [
          body('name')
              .isLength({max:10})
-             .withMessage('name must be at max 4 chars long')
+             .withMessage('name must be at max 10 chars long')
              .exists()
              .withMessage('name is required'),
          body('youtubeUrl')
