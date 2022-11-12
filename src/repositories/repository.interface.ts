@@ -1,10 +1,9 @@
-import {PostInputModelDto} from "../controllers/dto/postInputModel.dto";
-import {BlogInputModelDto} from "../controllers/dto/blogInputModel.dto";
 import {PostEntity} from "../services/entities/post.entity";
 import {BlogEntity} from "../services/entities/blog.entity";
 
 export interface PostDbInterface extends PostEntity {
     id: string;
+
 }
 
 export interface BlogDbInterface extends BlogEntity {
@@ -14,7 +13,7 @@ export interface BlogDbInterface extends BlogEntity {
 export interface DataBaseType {
     posts: PostDbInterface[];
     blogs: BlogDbInterface[];
-};
+}
 
 export interface RepositoryInterface {
     dataBaseClear: () => boolean;

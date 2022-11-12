@@ -3,6 +3,7 @@ import {PostInputModelDto} from "../controllers/dto/postInputModel.dto";
 import {repository} from "../repositories/repository";
 import {PostEntity} from "./entities/post.entity";
 import {PostDbInterface} from "../repositories/repository.interface";
+import {PostsServiceInterface} from "./posts.service.interface";
 
 const {
     returnAllPosts,
@@ -14,11 +15,9 @@ const {
 } = repository;
 
 
-export const PostsService = {
+export const postsService: PostsServiceInterface = {
     getAllPosts: (): PostViewModelDto[] => {
         const postsFromDb = returnAllPosts();
-        if (postsFromDb.length === 0) return [];
-
         const result: PostViewModelDto[] = [];
         postsFromDb.forEach(p => {
             const blogName = returnBlogById(p.blogId)?.name;
@@ -44,7 +43,7 @@ export const PostsService = {
             title, shortDescription, content, blogId, dateAt
         };
         const postInDb = createNewPost(newPost);
-       return {
+        return {
             id: postInDb.id,
             title: postInDb.title,
             shortDescription: postInDb.shortDescription,
@@ -56,7 +55,7 @@ export const PostsService = {
     getPostById: (id: string): PostViewModelDto | undefined => {
         const postFromDb = returnPostById(id);
         if (!postFromDb) return;
-        const {title, shortDescription, content, blogId, dateAt} = postFromDb;
+        const {title, shortDescription, content, blogId} = postFromDb;
         const blogName = returnBlogById(blogId)?.name;
         if (!blogName) return;
         return {
@@ -69,7 +68,7 @@ export const PostsService = {
         };
     },
 
-    editPostById: (id: string, post: PostEntity): boolean => {
+    editPostById: (id: string, post: PostInputModelDto): boolean => {
         const {title, shortDescription, content, blogId} = post;
         const oldPost = returnPostById(id);
         if (!oldPost) return false;
@@ -84,8 +83,8 @@ export const PostsService = {
         return updatePostById(id, postToDb);
     },
 
-
     deletePostById: (id: string): boolean => {
+        if (!returnPostById) return false;
         return deletePostById(id);
     },
 };
