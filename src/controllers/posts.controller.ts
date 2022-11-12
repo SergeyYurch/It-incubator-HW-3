@@ -8,6 +8,7 @@ import {
     RequestWithIdAndBody
 } from "../types/request.type";
 import {blogsService} from "../services/blogs.service";
+import {APIErrorResultModel, FieldError} from "./dto/apiErrorResult.dto";
 
 export const postsRouter = Router();
 const {validatePostInputModel} = validatorMiddleware;
@@ -19,42 +20,49 @@ postsRouter.get('/', (req: Request, res: Response) => {
     return res.status(200).json(posts);
 });
 
-
 postsRouter.post('/', validatePostInputModel(), (req: RequestWithBody<PostInputModelDto>, res: Response) => {
     const result = validationResult(req);
-    let validationError = result.array().map(e => ({message: e.msg, field: e.param}))
+    let validationError: FieldError[] = result.array().map(e => ({message: e.msg, field: e.param}));
     const {title, shortDescription, content, blogId} = req.body;
-    const errors= (blogId && !getBlogById(blogId))
-        ? [...validationError, {message: 'Incorrect blogId',field: 'blogId'}]: [...validationError]
-    if (errors.length>0) return res.status(400).json({errorsMessages:errors});
+    const errors: FieldError[] = (blogId && !getBlogById(blogId))
+        ? [...validationError, {
+            message: 'Incorrect blogId',
+            field: 'blogId'
+        }] : [...validationError];
+    if (errors.length > 0) return res.status(400).json({errorsMessages: errors});
     const createdPost = createNewPost({title, shortDescription, content, blogId});
     return createdPost ? res.status(201).json(createdPost) : res.sendStatus(500);
 });
 
 postsRouter.get('/:id', (req: RequestWithId, res: Response) => {
-    const id  = req.params.id;
+    const id = req.params.id;
     const result = getPostById(id);
     return result ? res.status(200).json(result) : res.sendStatus(404);
 });
 
 postsRouter.put('/:id', validatePostInputModel(), (req: RequestWithIdAndBody<PostInputModelDto>, res: Response) => {
-    const id  = req.params.id;
-    const body =req.body
+    const id = req.params.id;
+    const body = req.body;
     const result = validationResult(req);
-    const errors = {errorsMessages: result.array().map(e => ({message: e.msg, field: e.param}))};
+    const errors: APIErrorResultModel = {
+        errorsMessages: result.array().map(e => ({
+            message: e.msg,
+            field: e.param
+        }))
+    };
     if (!result.isEmpty()) return res.status(400).json(errors);
     const post: PostInputModelDto = {
         title: body.title,
         blogId: body.blogId,
         content: body.content,
         shortDescription: body.shortDescription
-    }
+    };
     return editPostById(id, post) ? res.sendStatus(204) : res.sendStatus(404);
 });
 
 postsRouter.delete('/:id', (req: RequestWithId, res: Response) => {
-    const id  = req.params.id;
+    const id = req.params.id;
     if (!getPostById(id)) return res.sendStatus(404);
-    return deletePostById(id) ? res.sendStatus(204) :res.sendStatus(500);
+    return deletePostById(id) ? res.sendStatus(204) : res.sendStatus(500);
 });
 

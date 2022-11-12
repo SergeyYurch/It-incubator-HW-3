@@ -7,6 +7,7 @@ import {
     RequestWithId, RequestWithIdAndBody,
 } from "../types/request.type";
 import {BlogInputModelDto} from "./dto/blogInputModel.dto";
+import {APIErrorResultModel} from "./dto/apiErrorResult.dto";
 
 export const blogsRouter = Router();
 
@@ -21,7 +22,7 @@ blogsRouter.post('/',
     validateBlogInputModel(),
     (req: RequestWithBody<BlogInputModelDto>, res: Response) => {
         const result = validationResult(req);
-        const errors = {
+        const errors: APIErrorResultModel  = {
             errorsMessages: result.array().map(e => ({
                 message: e.msg,
                 field: e.param
@@ -44,7 +45,7 @@ blogsRouter.put('/:id',
     (req: RequestWithIdAndBody<BlogInputModelDto>, res: Response) => {
         const id = req.params.id;
         const result = validationResult(req);
-        const errors = {
+        const errors: APIErrorResultModel = {
             errorsMessages: result.array().map(e => ({
                 message: e.msg,
                 field: e.param
@@ -58,5 +59,5 @@ blogsRouter.put('/:id',
 
 blogsRouter.delete('/:id', (req: RequestWithId, res: Response) => {
     const id = req.params.id;
-    return deleteBlogById(id) ? res.sendStatus(204) : res.sendStatus(404)
+    return deleteBlogById(id) ? res.sendStatus(204) : res.sendStatus(404);
 });

@@ -3,7 +3,6 @@ import {BlogEntity} from "../services/entities/blog.entity";
 
 export interface PostDbInterface extends PostEntity {
     id: string;
-
 }
 
 export interface BlogDbInterface extends BlogEntity {

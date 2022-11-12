@@ -8,8 +8,6 @@ const base64String = encode(`${login}:${pass}`);
 const validAuthString = `Basic ${base64String}`;
 
 export const authGuardMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    console.log('!!authGuardMiddleware!!!!');
-    console.log(req.method);
 
     if (noneAuthMethods.includes(req.method) || validAuthString === req.headers.authorization) {
         console.log('Auth is ok!');
