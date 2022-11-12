@@ -64,7 +64,7 @@ export const blogsService: BlogsServiceInterface = {
 
 
     deleteBlogById: (id: string): boolean => {
-        if (returnBlogById(id)) return false;
+        if (!returnBlogById(id)) return false;
         return deleteBlogById(id);
     },
 };

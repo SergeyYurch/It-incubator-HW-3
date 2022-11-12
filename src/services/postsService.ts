@@ -35,6 +35,7 @@ export const postsService: PostsServiceInterface = {
         return result;
     },
     createNewPost: (post: PostInputModelDto): PostViewModelDto | undefined => {
+        console.log('createNewPost');
         const {title, shortDescription, content, blogId} = post;
         const blogName = returnBlogById(blogId)?.name;
         if (!blogName) return;

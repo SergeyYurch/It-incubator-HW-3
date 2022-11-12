@@ -1,13 +1,12 @@
 import express from 'express'
-import * as dotenv from 'dotenv'
 import {testingRouter} from "./controllers/testing.controller";
 import {blogsRouter} from "./controllers/blogs.controller";
 import {postsRouter} from "./controllers/posts.controller";
 import {authGuardMiddleware} from "./middlewares/authGuard.middleware";
-dotenv.config()
 
-const app = express();
-const port = process.env.PORT || 5001
+export const app = express();
+// const port = process.env.PORT || 5001
+const port = 5001
 
 app.use(express.json())
 app.use(authGuardMiddleware);

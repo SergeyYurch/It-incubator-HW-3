@@ -9,8 +9,32 @@ import {
 } from "./repository.interface";
 
 export const dataBase: DataBaseType = {
-    posts: [],
-    blogs: []
+    posts: [
+        {
+            id: '1',
+            title: 'Post title 1',
+            shortDescription: 'shortDescription 1',
+            content: 'content',
+            blogId: '1',
+            dateAt: '2022-11-12T12:10:56.185Z'
+        }
+    ],
+    blogs: [
+        {
+            id: '1',
+            name: 'Blog name1',
+            youtubeUrl: 'https://www.youtube.com/watch?v=BMo29Gkx8K0&list=PLbLBXDhswD1eq9M-KavTK98Z4OI00VbsW',
+            dateAt: '2022-11-12T12:10:56.185Z'
+
+        },
+        {
+            id: '2',
+            name: 'Blog name2',
+            youtubeUrl: 'https://www.youtube.com/watch?v=BMo29Gkx8K0&list=PLbLBXDhswD1eq9M-KavTK98Z4OI00VbsW',
+            dateAt: '2022-11-12T12:10:56.185Z'
+
+        }
+    ]
 };
 
 export const repository: RepositoryInterface =
