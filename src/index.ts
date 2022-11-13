@@ -4,11 +4,13 @@ import {testingRouter} from "./controllers/testing.controller";
 import {blogsRouter} from "./controllers/blogs.controller";
 import {postsRouter} from "./controllers/posts.controller";
 import {authGuardMiddleware} from "./middlewares/authGuard.middleware";
+import cors from 'cors'
 dotenv.config()
 
 export const app = express();
 const port = process.env.PORT || 5001
 
+app.use(cors())
 app.use(express.json())
 app.use(authGuardMiddleware);
 app.use('/blogs', blogsRouter)
