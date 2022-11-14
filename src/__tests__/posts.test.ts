@@ -11,7 +11,6 @@ describe('POST: /posts create new post', () => {
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-
         //create blog
         const newBlog1 = await request(app)
             .post('/blogs')
@@ -47,7 +46,6 @@ describe('POST: /posts create new post', () => {
             blogId: blogId,
             blogName: 'blog1'
         });
-
     });
 
     it('should return code 400 and error with field title for blog without title ', async () => {
