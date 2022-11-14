@@ -1,5 +1,5 @@
 import request from 'supertest';
-import {app} from "../src";
+import {app} from "../index";
 
 const blog1 = {
     name: 'blog1',
@@ -11,17 +11,14 @@ const blog2 = {
 };
 
 
-
-
-
-describe('DELETE: /testing/all-data', () => {
-
-    it('should deleted all data and return code 204', async () => {
-        await request(app)
-            .delete('/testing/all-data')
-            .expect(204);
-    });
-    });
+// describe('DELETE: /testing/all-data', () => {
+//
+//     it('should deleted all data and return code 204', async () => {
+//         await request(app)
+//             .delete('/testing/all-data')
+//             .expect(204);
+//     });
+// });
 
 
 describe('POST: /blogs create new blog', () => {
@@ -29,7 +26,6 @@ describe('POST: /blogs create new blog', () => {
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"});
     });
 
     it('should return code 401 "Unauthorized" for unauthorized request', async () => {
@@ -37,6 +33,10 @@ describe('POST: /blogs create new blog', () => {
             .post('/blogs')
             .expect(401);
     });
+
+
+
+
 
     it('should return code 201 and newBlog for correct input data', async () => {
         const newBlog1 = await request(app)
@@ -87,6 +87,26 @@ describe('POST: /blogs create new blog', () => {
         });
     });
 
+
+    it('should return code 400 and error with field name for blog with empty___ name ', async () => {
+        const newBlog1 = await request(app)
+            .post('/blogs')
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send({
+                name: '         ',
+                youtubeUrl: 'https://youtube2.com'
+            })
+            .expect(400);
+
+        expect(newBlog1.body).toEqual({
+            errorsMessages: [{
+                message: expect.any(String),
+                field: 'name'
+            }]
+        });
+    });
+
+
     it('should return code 400 and error with field youtubeUrl for blog with incorrect youtubeUrl ', async () => {
         const newBlog1 = await request(app)
             .post('/blogs')
@@ -129,7 +149,6 @@ describe('GET: /blogs get all blogs', () => {
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"});
 
         //create new blog
         await request(app)
@@ -172,12 +191,11 @@ describe('GET:/blogs/id getBlogById', () => {
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"});
     });
 
     it('should return code 404 for incorrect ID', async () => {
         await request(app)
-            .get('/blogs/qwerty')
+            .get('/blogs/qwe-ss---s-s-s-srty')
             .expect(404);
     });
 
@@ -206,7 +224,6 @@ describe('DELETE:/blogs/id delete', () => {
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"});
     });
 
     it('should return code 401 "Unauthorized" for unauthorized request', async () => {
@@ -238,5 +255,79 @@ describe('DELETE:/blogs/id delete', () => {
         await request(app)
             .get(`/blogs/${id}`)
             .expect(404);
+    });
+});
+
+describe('PUT: /blogs edit blog', () => {
+    let id = '';
+    beforeAll(async () => {
+        await request(app)
+            .delete('/testing/all-data')
+
+        const newBlog1 = await request(app)
+            .post('/blogs')
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send(blog1)
+            .expect(201);
+        id = newBlog1.body.id;
+    });
+
+    it('should return code 401 "Unauthorized" for unauthorized request', async () => {
+        await request(app)
+            .put('/blogs')
+            .expect(401);
+    });
+
+    it('should return code 204 correct input data', async () => {
+        await request(app)
+            .put(`/blogs/${id}`)
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send({
+                name: 'blog5',
+                youtubeUrl: 'https://youtube5.com'
+            })
+            .expect(204);
+
+        const changedBlog = await request(app)
+            .get(`/blogs/${id}`);
+
+        expect(changedBlog.body).toEqual({
+            id: expect.any(String),
+            name: 'blog5',
+            youtubeUrl: 'https://youtube5.com'
+        });
+    });
+
+    it('should return code 404 for incorrect ID', async () => {
+        await request(app)
+            .put(`/blogs/3333333333333`)
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send({
+                name: 'blog5',
+                youtubeUrl: 'https://youtube5.com'
+            })
+            .expect(404);
+
+        const changedBlog = await request(app)
+            .get(`/blogs/${id}`);
+
+        expect(changedBlog.body).toEqual({
+            id: expect.any(String),
+            name: 'blog5',
+            youtubeUrl: 'https://youtube5.com'
+        });
+    });
+
+
+    it('should return code 400 for incorrect input data', async () => {
+        await request(app)
+            .put(`/blogs/${id}`)
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send({
+                name: 'blog5',
+                youtubeUrl: 'youtube5.com'
+            })
+            .expect(400);
+
     });
 });

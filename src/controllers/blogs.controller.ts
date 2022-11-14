@@ -44,6 +44,8 @@ blogsRouter.put('/:id',
     validateBlogInputModel(),
     (req: RequestWithIdAndBody<BlogInputModelDto>, res: Response) => {
         const id = req.params.id;
+        const isExistBlog = getBlogById(id);
+        if (!isExistBlog) return res.sendStatus(404);
         const result = validationResult(req);
         const errors: APIErrorResultModel = {
             errorsMessages: result.array().map(e => ({

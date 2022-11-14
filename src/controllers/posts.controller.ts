@@ -22,14 +22,22 @@ postsRouter.get('/', (req: Request, res: Response) => {
 
 postsRouter.post('/', validatePostInputModel(), (req: RequestWithBody<PostInputModelDto>, res: Response) => {
     const result = validationResult(req);
-    let validationError: FieldError[] = result.array().map(e => ({message: e.msg, field: e.param}));
+    const errors: APIErrorResultModel  = {
+        errorsMessages: result.array().map(e => ({
+            message: e.msg,
+            field: e.param
+        }))
+    };
+    console.log(errors);
+    if (!result.isEmpty()) return res.status(400).json(errors);
     const {title, shortDescription, content, blogId} = req.body;
-    const errors: FieldError[] = (blogId && !getBlogById(blogId))
-        ? [...validationError, {
-            message: 'Incorrect blogId',
-            field: 'blogId'
-        }] : [...validationError];
-    if (errors.length > 0) return res.status(400).json({errorsMessages: errors});
+    // let validationError: FieldError[] = result.array().map(e => ({message: e.msg, field: e.param}));
+    // const errors: FieldError[] = (blogId && !getBlogById(blogId))
+    //     ? [...validationError, {
+    //         message: 'Incorrect blogId',
+    //         field: 'blogId'
+    //     }] : [...validationError];
+    // if (errors.length > 0) return res.status(400).json({errorsMessages: errors});
     const createdPost = createNewPost({title, shortDescription, content, blogId});
     return createdPost ? res.status(201).json(createdPost) : res.sendStatus(500);
 });

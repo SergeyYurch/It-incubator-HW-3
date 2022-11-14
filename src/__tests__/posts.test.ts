@@ -1,13 +1,16 @@
 import request from 'supertest';
-import {app} from "../src";
-import {blog1, post1} from "./testData";
+import {app} from "../index";
+
+const blog1 = {
+    name: 'blog1',
+    youtubeUrl: 'https://youtube1.com'
+}
 
 describe('POST: /posts create new post', () => {
     let blogId = '';
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"});
 
         //create blog
         const newBlog1 = await request(app)
@@ -61,8 +64,8 @@ describe('POST: /posts create new post', () => {
 
         expect(newPost.body).toEqual({
             errorsMessages: [{
-                message: expect.any(String),
-                field: 'title'
+                field: 'title',
+                message: expect.any(String)
             }]
         });
     });
@@ -190,7 +193,6 @@ describe('GET: /posts get all posts', () => {
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"});
 
         //create blog
         const newBlog1 = await request(app)
@@ -257,7 +259,6 @@ describe('GET:/posts/id get post by ID', () => {
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"});
         //create blog
         const newBlog1 = await request(app)
             .post('/blogs')
@@ -306,7 +307,6 @@ describe('PUT:/posts/id edit post by ID', () => {
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"});
         //create blog
         const newBlog1 = await request(app)
             .post('/blogs')
@@ -377,7 +377,6 @@ describe('DELETE:/posts/id delete', () => {
     beforeAll(async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"});
 
         //create blog
         const newBlog1 = await request(app)
