@@ -1,17 +1,15 @@
 import {Router, Request, Response} from "express";
 import {validatorMiddleware} from "../middlewares/validator.middleware";
-import {validationResult} from "express-validator";
 import {blogsService} from "../services/blogs.service";
 import {
     RequestWithBody,
     RequestWithId, RequestWithIdAndBody,
 } from "../types/request.type";
 import {BlogInputModelDto} from "./dto/blogInputModel.dto";
-import {APIErrorResultModel} from "./dto/apiErrorResult.dto";
 
 export const blogsRouter = Router();
 
-const {validateBlogInputModel} = validatorMiddleware;
+const {validateBlogInputModel, validateResult} = validatorMiddleware;
 const {getAllBlogs, createNewBlog, editBlogById, getBlogById, deleteBlogById} = blogsService;
 
 blogsRouter.get('/', (req: Request, res: Response) => {
@@ -20,15 +18,8 @@ blogsRouter.get('/', (req: Request, res: Response) => {
 
 blogsRouter.post('/',
     validateBlogInputModel(),
+    validateResult,
     (req: RequestWithBody<BlogInputModelDto>, res: Response) => {
-        const result = validationResult(req);
-        const errors: APIErrorResultModel  = {
-            errorsMessages: result.array().map(e => ({
-                message: e.msg,
-                field: e.param
-            }))
-        };
-        if (!result.isEmpty()) return res.status(400).json(errors);
         const {name, youtubeUrl} = req.body;
         const blogFromDb = createNewBlog({name, youtubeUrl});
         return blogFromDb ? res.status(201).json(blogFromDb) : res.sendStatus(500);
@@ -42,18 +33,10 @@ blogsRouter.get('/:id', (req: RequestWithId, res: Response) => {
 
 blogsRouter.put('/:id',
     validateBlogInputModel(),
+    validateResult,
     (req: RequestWithIdAndBody<BlogInputModelDto>, res: Response) => {
         const id = req.params.id;
-        const isExistBlog = getBlogById(id);
-        if (!isExistBlog) return res.sendStatus(404);
-        const result = validationResult(req);
-        const errors: APIErrorResultModel = {
-            errorsMessages: result.array().map(e => ({
-                message: e.msg,
-                field: e.param
-            }))
-        };
-        if (!result.isEmpty()) return res.status(400).json(errors);
+        if (!getBlogById(id)) return res.sendStatus(404);
         const {name, youtubeUrl} = req.body;
         const inputBlog: BlogInputModelDto = {name, youtubeUrl};
         return !editBlogById(id, inputBlog) ? res.sendStatus(500) : res.sendStatus(204);
