@@ -8,7 +8,6 @@ const base64String = encode(`${login}:${pass}`);
 const validAuthString = `Basic ${base64String}`;
 
 export const authGuardMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.url);
     if (req.url === '/testing/all-data') return next();
     if (noneAuthMethods.includes(req.method) || validAuthString === req.headers.authorization) {
         return next();
