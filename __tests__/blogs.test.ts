@@ -1,6 +1,17 @@
 import request from 'supertest';
 import {app} from "../src";
-import {blog1, blog2} from "./testData";
+
+const blog1 = {
+    name: 'blog1',
+    youtubeUrl: 'https://youtube1.com'
+};
+const blog2 = {
+    name: 'blog2',
+    youtubeUrl: 'https://youtube2.com'
+};
+
+
+
 
 
 describe('DELETE: /testing/all-data', () => {
@@ -8,17 +19,9 @@ describe('DELETE: /testing/all-data', () => {
     it('should deleted all data and return code 204', async () => {
         await request(app)
             .delete('/testing/all-data')
-            .auth('admin', 'qwerty', {type: "basic"})
             .expect(204);
     });
-
-    it('should return code 401 "Unauthorized"', async () => {
-        await request(app)
-            .delete('/testing/all-data')
-            .expect(401);
     });
-
-});
 
 
 describe('POST: /blogs create new blog', () => {
