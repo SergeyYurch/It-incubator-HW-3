@@ -53,13 +53,13 @@ export const validatorMiddleware = {
     ],
     validateResult: (req: Request, res: Response, next: NextFunction) => {
         const result = validationResult(req);
-        const errors: APIErrorResultModel = {
+        const errorMessages: APIErrorResultModel = {
             errorsMessages: result.array({onlyFirstError: true}).map(e => ({
                 message: e.msg,
                 field: e.param
             }))
         };
-        if (!result.isEmpty()) return res.status(400).json(errors);
+        if (!result.isEmpty()) return res.status(400).json(errorMessages);
         return next();
     }
 };
