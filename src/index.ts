@@ -5,18 +5,12 @@ import {blogsRouter} from "./controllers/blogs.controller";
 import {postsRouter} from "./controllers/posts.controller";
 import {authGuardMiddleware} from "./middlewares/authGuard.middleware";
 import cors from 'cors'
+import {App} from "./app";
 dotenv.config()
 
-export const app = express();
-const port = process.env.PORT || 5001
+function bootstrap() {
+    const app = new App();
+    app.init().then();
+}
 
-app.use(cors())
-app.use(express.json())
-app.use(authGuardMiddleware);
-app.use('/blogs', blogsRouter)
-app.use('/posts', postsRouter)
-app.use('/testing', testingRouter)
-
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`)
-})
+bootstrap();
