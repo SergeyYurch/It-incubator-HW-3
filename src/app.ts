@@ -5,6 +5,7 @@ import {blogsRouter} from "./controllers/blogs.controller";
 import {postsRouter} from "./controllers/posts.controller";
 import {authGuardMiddleware} from "./middlewares/authGuard.middleware";
 import {Server} from "http";
+import {runDB} from "./repositories/db";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ export class App {
     public async init() {
         this.useMiddleware();
         this.useRouters();
+        await runDB();
         this.server = this.app.listen(this.port, ()=>{
             console.log(`[App] Server on post:${this.port} is start `);
         });
