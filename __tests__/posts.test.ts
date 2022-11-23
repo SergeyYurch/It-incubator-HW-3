@@ -3,7 +3,7 @@ import {app} from "../src";
 
 const blog1 = {
     name: 'blog1',
-    youtubeUrl: 'https://youtube1.com'
+    websiteUrl: 'https://youtube1.com'
 }
 
 describe('POST: /posts create new post', () => {

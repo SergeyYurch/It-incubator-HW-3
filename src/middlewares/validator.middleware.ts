@@ -22,7 +22,7 @@ export const validatorMiddleware = {
             .exists()
             .trim()
             .isLength({max: 100})
-            .withMessage('youtubeUrl must be at max 100 chars long')
+            .withMessage('websiteUrl must be at max 100 chars long')
             .matches(/^https:\/\/([a-zA-Z0-9_-]+.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
             .exists()
             .withMessage('name is required')

@@ -1,5 +1,5 @@
 export interface BlogEntity {
     name:string;
-    youtubeUrl:string;
+    websiteUrl:string;
     dateAt:string;
 }

@@ -3,11 +3,11 @@ import {app} from "../src";
 
 const blog1 = {
     name: 'blog1',
-    youtubeUrl: 'https://youtube1.com'
+    websiteUrl: 'https://youtube1.com'
 };
 const blog2 = {
     name: 'blog2',
-    youtubeUrl: 'https://youtube2.com'
+    websiteUrl: 'https://youtube2.com'
 };
 
 
@@ -48,7 +48,7 @@ describe('POST: /blogs create new blog', () => {
         expect(newBlog1.body).toEqual({
             id: expect.any(String),
             name: 'blog1',
-            youtubeUrl: 'https://youtube1.com'
+            websiteUrl: 'https://youtube1.com'
         });
     });
 
@@ -57,7 +57,7 @@ describe('POST: /blogs create new blog', () => {
             .post('/blogs')
             .auth('admin', 'qwerty', {type: "basic"})
             .send({
-                youtubeUrl: 'https://youtube2.com'
+                websiteUrl: 'https://youtube2.com'
             })
             .expect(400);
 
@@ -75,7 +75,7 @@ describe('POST: /blogs create new blog', () => {
             .auth('admin', 'qwerty', {type: "basic"})
             .send({
                 name: '123456789123456789',
-                youtubeUrl: 'https://youtube2.com'
+                websiteUrl: 'https://youtube2.com'
             })
             .expect(400);
 
@@ -94,7 +94,7 @@ describe('POST: /blogs create new blog', () => {
             .auth('admin', 'qwerty', {type: "basic"})
             .send({
                 name: '         ',
-                youtubeUrl: 'https://youtube2.com'
+                websiteUrl: 'https://youtube2.com'
             })
             .expect(400);
 
@@ -107,38 +107,38 @@ describe('POST: /blogs create new blog', () => {
     });
 
 
-    it('should return code 400 and error with field youtubeUrl for blog with incorrect youtubeUrl ', async () => {
+    it('should return code 400 and error with field websiteUrl for blog with incorrect websiteUrl ', async () => {
         const newBlog1 = await request(app)
             .post('/blogs')
             .auth('admin', 'qwerty', {type: "basic"})
             .send({
                 name: 'name',
-                youtubeUrl: 'youtube2.com'
+                websiteUrl: 'youtube2.com'
             })
             .expect(400);
 
         expect(newBlog1.body).toEqual({
             errorsMessages: [{
                 message: expect.any(String),
-                field: 'youtubeUrl'
+                field: 'websiteUrl'
             }]
         });
     });
 
-    it('should return code 400 and error with field youtubeUrl for blog without youtubeUrl ', async () => {
+    it('should return code 400 and error with field websiteUrl for blog without websiteUrl ', async () => {
         const newBlog1 = await request(app)
             .post('/blogs')
             .auth('admin', 'qwerty', {type: "basic"})
             .send({
                 name: 'name',
-                youtubeUrl: 'youtube2.com'
+                websiteUrl: 'youtube2.com'
             })
             .expect(400);
 
         expect(newBlog1.body).toEqual({
             errorsMessages: [{
                 message: expect.any(String),
-                field: 'youtubeUrl'
+                field: 'websiteUrl'
             }]
         });
     });
@@ -174,14 +174,14 @@ describe('GET: /blogs get all blogs', () => {
             {
                 id: expect.any(String),
                 name: 'blog1',
-                youtubeUrl: 'https://youtube1.com'
+                websiteUrl: 'https://youtube1.com'
             });
 
         expect(blogs.body[1]).toEqual(
             {
                 id: expect.any(String),
                 name: 'blog2',
-                youtubeUrl: 'https://youtube2.com'
+                websiteUrl: 'https://youtube2.com'
             });
     });
 });
@@ -214,7 +214,7 @@ describe('GET:/blogs/id getBlogById', () => {
         expect(blog.body).toEqual({
             id: expect.any(String),
             name: 'blog1',
-            youtubeUrl: 'https://youtube1.com'
+            websiteUrl: 'https://youtube1.com'
         });
     });
 });
@@ -284,7 +284,7 @@ describe('PUT: /blogs edit blog', () => {
             .auth('admin', 'qwerty', {type: "basic"})
             .send({
                 name: 'blog5',
-                youtubeUrl: 'https://youtube5.com'
+                websiteUrl: 'https://youtube5.com'
             })
             .expect(204);
 
@@ -294,7 +294,7 @@ describe('PUT: /blogs edit blog', () => {
         expect(changedBlog.body).toEqual({
             id: expect.any(String),
             name: 'blog5',
-            youtubeUrl: 'https://youtube5.com'
+            websiteUrl: 'https://youtube5.com'
         });
     });
 
@@ -304,7 +304,7 @@ describe('PUT: /blogs edit blog', () => {
             .auth('admin', 'qwerty', {type: "basic"})
             .send({
                 name: 'blog5',
-                youtubeUrl: 'https://youtube5.com'
+                websiteUrl: 'https://youtube5.com'
             })
             .expect(404);
 
@@ -314,7 +314,7 @@ describe('PUT: /blogs edit blog', () => {
         expect(changedBlog.body).toEqual({
             id: expect.any(String),
             name: 'blog5',
-            youtubeUrl: 'https://youtube5.com'
+            websiteUrl: 'https://youtube5.com'
         });
     });
 
@@ -325,7 +325,7 @@ describe('PUT: /blogs edit blog', () => {
             .auth('admin', 'qwerty', {type: "basic"})
             .send({
                 name: 'blog5',
-                youtubeUrl: 'youtube5.com'
+                websiteUrl: 'youtube5.com'
             })
             .expect(400);
 
