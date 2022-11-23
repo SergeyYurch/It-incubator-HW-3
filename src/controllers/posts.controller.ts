@@ -12,7 +12,7 @@ const {validatePostInputModel, validateResult} = validatorMiddleware;
 const {deletePostById, getAllPosts, editPostById, getPostById, createNewPost} = postsService;
 
 postsRouter.get('/', (req: Request, res: Response) => {
-    const posts = getAllPosts();
+    const posts =  getAllPosts();
     return res.status(200).json(posts);
 });
 
