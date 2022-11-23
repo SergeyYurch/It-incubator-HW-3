@@ -7,13 +7,18 @@ import {APIErrorResultModel} from "../controllers/dto/apiErrorResult.dto";
 export const validatorMiddleware = {
     validateBlogInputModel: () => [
         body('name')
-            .exists()
             .trim()
-            .isLength({min: 1, max: 10})
+            .isLength({min: 1, max: 15})
             .withMessage('name must be at max 10 chars long')
             .exists()
             .withMessage('name is required'),
-        body('youtubeUrl')
+        body('description')
+            .trim()
+            .exists()
+            .withMessage('name is required')
+            .isLength({min: 1, max: 500})
+            .withMessage('length is wrong'),
+        body('websiteUrl')
             .exists()
             .trim()
             .isLength({max: 100})
