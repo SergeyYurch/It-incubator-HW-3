@@ -1,70 +1,77 @@
-import {repository} from "../repositories/repository";
+import {repository} from "../repositories/repositoryMongo";
 import {BlogViewModelDto} from "../controllers/dto/blogViewModel.dto";
 import {BlogsServiceInterface} from "./blogs.service.interface";
 import {BlogInputModelDto} from "../controllers/dto/blogInputModel.dto";
 import {BlogEntity} from "./entities/blog.entity";
 import {BlogDbInterface} from "../repositories/repository.interface";
+import {BlogEditEntity} from "./entities/blog-edit.entity";
 
 const {
-    returnAllBlogs,
+    getAllBlogs,
     createNewBlog,
     updateBlogById,
-    returnBlogById,
+    getBlogById,
     deleteBlogById
 } = repository;
 
-export const blogsService: BlogsServiceInterface = {
+export const blogsService = {
 
-    getAllBlogs: (): BlogViewModelDto[] => {
-        const blogsFromDb = returnAllBlogs();
+    getAllBlogs: async (): Promise<BlogViewModelDto[]> => {
+        const blogsFromDb = await getAllBlogs();
         return blogsFromDb.map(p => ({
-            id: p.id,
+            id: p._id.toString(),
             name: p.name,
-            youtubeUrl: p.youtubeUrl
+            websiteUrl: p.websiteUrl,
+            description: p.description,
+            createdAt: p.createdAt
         }));
     },
 
-    createNewBlog: (blog: BlogInputModelDto): BlogViewModelDto | undefined => {
-        const {name, youtubeUrl} = blog;
-        const dateAt = new Date().toISOString();
+    createNewBlog: async (blog: BlogInputModelDto): Promise<BlogViewModelDto | null> => {
+        const {name, websiteUrl, description} = blog;
+        const createdAt = new Date().toISOString();
         const newBlog: BlogEntity = {
-            name, youtubeUrl, dateAt
+            name, websiteUrl, description, createdAt
         };
-        const blogInDb = createNewBlog(newBlog);
+        const blogInDb = await createNewBlog(newBlog);
+        if (!blogInDb) return null;
         return {
-            id: blogInDb.id,
+            id: blogInDb._id.toString(),
             name: blogInDb.name,
-            youtubeUrl: blogInDb.youtubeUrl
+            description: blogInDb.description,
+            websiteUrl: blogInDb.websiteUrl,
+            createdAt: blogInDb.createdAt
         };
     },
 
-    getBlogById: (id: string): BlogViewModelDto | undefined => {
-        const blogFromDb = returnBlogById(id);
-        if (!blogFromDb) return;
-        const {name, youtubeUrl} = blogFromDb;
+    getBlogById: async (id: string): Promise<BlogViewModelDto | null> => {
+        const blogFromDb = await getBlogById(id);
+        if (!blogFromDb) return null;
+        const {name, websiteUrl,description, createdAt, _id} = blogFromDb;
         return {
-            id,
+            id: _id.toString(),
             name,
-            youtubeUrl
+            description,
+            websiteUrl,
+            createdAt
         };
     },
 
-    editBlogById: (id: string, blog: BlogInputModelDto): boolean => {
-        const {name, youtubeUrl} = blog;
-        const oldBlog = returnBlogById(id);
-        if (!oldBlog) return false;
-        const blogToDb: BlogDbInterface = {
-            id,
+    editBlogById: async (id: string, blog: BlogInputModelDto): Promise<boolean> => {
+        const {name, websiteUrl, description} = blog;
+       // const oldBlog = await getBlogById(id);
+       // if (!oldBlog) return false;
+        const blogToDb: BlogEditEntity = {
             name,
-            youtubeUrl,
-            dateAt: oldBlog.dateAt
+            websiteUrl,
+            description,
         };
-        return updateBlogById(id, blogToDb);
+        return await updateBlogById(id, blogToDb);
     },
 
-
-    deleteBlogById: (id: string): boolean => {
-        if (!returnBlogById(id)) return false;
-        return deleteBlogById(id);
+    deleteBlogById: async (id: string): Promise<boolean> => {
+        const blog = await getBlogById(id);
+        if (!blog) return false;
+        return await deleteBlogById(id);
     },
 };
