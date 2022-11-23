@@ -1,5 +1,7 @@
 export interface BlogViewModelDto {
     id: string;
     name:string;
-    youtubeUrl:string;
+    description:string;
+    websiteUrl:string;
+    createdAt:string;
 }
