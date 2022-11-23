@@ -12,37 +12,40 @@ export const blogsRouter = Router();
 const {validateBlogInputModel, validateResult} = validatorMiddleware;
 const {getAllBlogs, createNewBlog, editBlogById, getBlogById, deleteBlogById} = blogsService;
 
-blogsRouter.get('/', (req: Request, res: Response) => {
-    return res.status(200).json(getAllBlogs());
+blogsRouter.get('/', async (req: Request, res: Response) => {
+    return res.status(200).json(await getAllBlogs());
 });
 
 blogsRouter.post('/',
     validateBlogInputModel(),
     validateResult,
-    (req: RequestWithBody<BlogInputModelDto>, res: Response) => {
-        const {name, youtubeUrl} = req.body;
-        const blogFromDb = createNewBlog({name, youtubeUrl});
-        return blogFromDb ? res.status(201).json(blogFromDb) : res.sendStatus(500);
+    async (req: RequestWithBody<BlogInputModelDto>, res: Response) => {
+        const {name, websiteUrl, description} = req.body;
+        const result = await createNewBlog({name, websiteUrl, description});
+        return result ? res.status(201).json(result) : res.sendStatus(500);
     });
 
-blogsRouter.get('/:id', (req: RequestWithId, res: Response) => {
+blogsRouter.get('/:id', async (req: RequestWithId, res: Response) => {
     const id = req.params.id;
-    const result = getBlogById(id);
+    const result = await getBlogById(id);
     return result ? res.status(200).json(result) : res.sendStatus(404);
 });
 
 blogsRouter.put('/:id',
     validateBlogInputModel(),
     validateResult,
-    (req: RequestWithIdAndBody<BlogInputModelDto>, res: Response) => {
+    async (req: RequestWithIdAndBody<BlogInputModelDto>, res: Response) => {
         const id = req.params.id;
-        if (!getBlogById(id)) return res.sendStatus(404);
-        const {name, youtubeUrl} = req.body;
-        const inputBlog: BlogInputModelDto = {name, youtubeUrl};
-        return !editBlogById(id, inputBlog) ? res.sendStatus(500) : res.sendStatus(204);
+        const blog = await getBlogById(id);
+        if (!blog) return res.sendStatus(404);
+        const {name, websiteUrl, description} = req.body;
+        const inputBlog: BlogInputModelDto = {name, websiteUrl, description};
+        const result =await editBlogById(id, inputBlog);
+        return !result ? res.sendStatus(500) : res.sendStatus(204);
     });
 
-blogsRouter.delete('/:id', (req: RequestWithId, res: Response) => {
+blogsRouter.delete('/:id', async (req: RequestWithId, res: Response) => {
     const id = req.params.id;
-    return deleteBlogById(id) ? res.sendStatus(204) : res.sendStatus(404);
+    const result =await deleteBlogById(id);
+    return  result? res.sendStatus(204) : res.sendStatus(404);
 });
