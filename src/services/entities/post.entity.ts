@@ -3,5 +3,5 @@ export interface PostEntity {
     shortDescription:string;
     content: string;
     blogId:string;
-    dateAt: string;
+    createdAt: string;
 }
