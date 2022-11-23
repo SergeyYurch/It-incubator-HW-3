@@ -1,12 +1,14 @@
 import {PostEntity} from "../services/entities/post.entity";
 import {BlogEntity} from "../services/entities/blog.entity";
+import {ObjectId} from "mongodb";
 
 export interface PostDbInterface extends PostEntity {
-    id: string;
+    _id: ObjectId;
+
 }
 
 export interface BlogDbInterface extends BlogEntity {
-    id: string;
+    _id: ObjectId;
 }
 
 export interface DataBaseType {
@@ -15,15 +17,15 @@ export interface DataBaseType {
 }
 
 export interface RepositoryInterface {
-    dataBaseClear: () => boolean;
-    returnAllBlogs: () => BlogDbInterface[];
-    createNewBlog: (inputBlog: BlogEntity) => BlogDbInterface;
-    returnBlogById: (id: string) => BlogDbInterface | undefined;
-    updateBlogById: (id: string, inputBlog: BlogEntity) => boolean;
-    deleteBlogById: (id: string) => boolean;
-    returnAllPosts: () => PostDbInterface[];
-    createNewPost: (inputPost: PostEntity) => PostDbInterface;
-    returnPostById: (id: string) => PostDbInterface | undefined;
-    updatePostById: (id: string, inputPost: PostEntity) => boolean;
-    deletePostById: (id: string) => boolean;
+    dataBaseClear: () => Promise<boolean>;
+    getAllBlogs: () => Promise<BlogDbInterface[]>;
+    createNewBlog: (inputBlog: BlogEntity) => Promise<BlogDbInterface | null>;
+    getBlogById: (id: string) => Promise<BlogDbInterface | null>;
+    updateBlogById: (id: string, inputBlog: BlogEntity) => Promise<boolean>;
+    deleteBlogById: (id: string) => Promise<boolean>;
+    getAllPosts: () => Promise<PostDbInterface[]>;
+    createNewPost: (inputPost: PostEntity) => Promise<PostDbInterface>;
+    getPostById: (id: string) => Promise<PostDbInterface | null>;
+    updatePostById: (id: string, inputPost: PostEntity) => Promise<boolean>;
+    deletePostById: (id: string) => Promise<boolean>;
 }
