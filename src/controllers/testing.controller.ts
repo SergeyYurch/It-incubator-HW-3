@@ -1,13 +1,13 @@
 import {Router, Request, Response, NextFunction} from "express";
-import {repository} from "../repositories/repository";
+import {repository} from "../repositories/repositoryMongo";
 export const testingRouter = Router();
 
 testingRouter.use((req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
-testingRouter.delete('/all-data', (req: Request, res: Response): void => {
-        const result = repository.dataBaseClear();
+testingRouter.delete('/all-data', async (req: Request, res: Response)=> {
+        const result = await repository.dataBaseClear();
         if (result) {
             res.sendStatus(204);
         } else {

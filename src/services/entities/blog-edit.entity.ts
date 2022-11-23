@@ -1,6 +1,5 @@
-export interface BlogEntity {
+export interface BlogEditEntity {
     name:string;
     description:string;
     websiteUrl:string;
-    createdAt:string;
 }
