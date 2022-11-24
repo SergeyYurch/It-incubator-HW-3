@@ -2,8 +2,8 @@ import {PostViewModelDto} from "../controllers/dto/postViewModel.dto";
 import {PostInputModelDto} from "../controllers/dto/postInputModel.dto";
 import {repository} from "../repositories/repositoryMongo";
 import {PostEntity} from "./entities/post.entity";
-import {PostDbInterface} from "../repositories/repository.interface";
 import {PostsServiceInterface} from "./posts.service.interface";
+import {PostEditEntity} from "./entities/postEdit.entity";
 
 const {
     getAllPosts,
@@ -15,79 +15,71 @@ const {
 } = repository;
 
 
-export const postsService = {
-    getAllPosts: (): PostViewModelDto[] | null => {
-        const postsFromDb = getAllPosts();
-        const result: PostViewModelDto[] = [];
-        // postsFromDb.forEach(p => {
-        //     const blogName = getBlogById(p.blogId)?.name;
-        //     if (blogName) {
-        //         result.push({
-        //             id: p.id,
-        //             title: p.title,
-        //             shortDescription: p.shortDescription,
-        //             content: p.content,
-        //             blogId: p.blogId,
-        //             blogName: blogName
-        //         });
-        //     }
-        // });
-     //  return result;
-        return null
+export const postsService:PostsServiceInterface = {
+    getAllPosts: async (): Promise<PostViewModelDto[]> => {
+        const postsFromDb = await getAllPosts();
+        return postsFromDb.map(p => ({
+            id: p._id.toString(),
+            title: p.title,
+            shortDescription: p.shortDescription,
+            content: p.content,
+            blogId: p.blogId,
+            blogName: p.blogName,
+            createdAt: p.createdAt
+        }));
+
     },
-    createNewPost: (post: PostInputModelDto): PostViewModelDto | null => {
+    createNewPost: async (post: PostInputModelDto): Promise<PostViewModelDto | null> => {
         const {title, shortDescription, content, blogId} = post;
-        // const blogName = getBlogById(blogId)?.name;
-        // if (!blogName) return null ;
+        const blogName = (await getBlogById(blogId))?.name
+        if (!blogName) return null ;
         const createdAt = new Date().toISOString();
         const newPost: PostEntity = {
-            title, shortDescription, content, blogId, createdAt
+            title, shortDescription, content, blogId, blogName, createdAt
         };
-        const postInDb = createNewPost(newPost);
-        // return {
-        //     id: postInDb.id,
-        //     title: postInDb.title,
-        //     shortDescription: postInDb.shortDescription,
-        //     content: postInDb.content,
-        //     blogId: postInDb.blogId,
-        //     blogName: blogName
-        // };
-        return null;
+        const postInDb = await createNewPost(newPost);
+        if(!postInDb) return null
+        return {
+            id: postInDb._id.toString(),
+            title: postInDb.title,
+            shortDescription: postInDb.shortDescription,
+            content: postInDb.content,
+            blogId: postInDb.blogId,
+            blogName: postInDb.blogName,
+            createdAt:postInDb.createdAt
+        };
     },
-    getPostById: (id: string): PostViewModelDto | null => {
-        const postFromDb = getPostById(id);
+    getPostById: async (id: string): Promise<PostViewModelDto | null> => {
+        const postFromDb = await getPostById(id);
         if (!postFromDb) return null;
-        // const {title, shortDescription, content, blogId} = postFromDb;
-        // const blogName = getBlogById(blogId)?.name;
-        // if (!blogName) return;
-        // return {
-        //     id,
-        //     title,
-        //     shortDescription,
-        //     content,
-        //     blogId,
-        //     blogName
-        // };
-        return  null;
+        const {title, shortDescription, content, blogId, blogName, createdAt,_id} = postFromDb;
+        if (!blogName) return null;
+        return {
+            id:_id.toString(),
+            title,
+            shortDescription,
+            content,
+            blogId,
+            blogName,
+            createdAt
+        };
     },
 
-    editPostById: (id: string, post: PostInputModelDto): boolean => {
-        // const {title, shortDescription, content, blogId} = post;
-        // const oldPost = getPostById(id);
-        // if (!oldPost) return false;
-        // const postToDb: PostEntity = {
-        //     title,
-        //     createdAt: oldPost.createdAt,
-        //     blogId,
-        //     content,
-        //     shortDescription
-        // };
-        // return updatePostById(id, postToDb);
-        return true
+    editPostById: async (id: string, post: PostInputModelDto): Promise<boolean> => {
+        const {title, shortDescription, content, blogId} = post;
+        const blogName =(await getBlogById(blogId))?.name
+        if (!blogName) return false;
+        const postToDb: PostEditEntity = {
+            title,
+            blogId,
+            content,
+            shortDescription,
+            blogName
+        };
+        return await updatePostById(id, postToDb);
     },
 
-    deletePostById: (id: string): boolean => {
-        if (!getPostById) return false;
+    deletePostById: async (id: string): Promise<boolean> => {
         return deletePostById(id);
     },
 };
