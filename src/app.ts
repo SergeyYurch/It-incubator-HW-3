@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 import {testingRouter} from "./controllers/testing.controller";
 import {blogsRouter} from "./controllers/blogs.controller";
 import {postsRouter} from "./controllers/posts.controller";
-import {authGuardMiddleware} from "./middlewares/authGuard.middleware";
+// import {authGuardMiddleware} from "./middlewares/authGuard.middleware";
 import {Server} from "http";
 import {runDB} from "./repositories/db";
 
@@ -21,7 +21,7 @@ export class App {
 
     useMiddleware(): void {
         this.app.use(express.json());
-        this.app.use(authGuardMiddleware);
+        // this.app.use(authGuardMiddleware);
     }
 
     useRouters(): void {
