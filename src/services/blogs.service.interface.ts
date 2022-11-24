@@ -3,9 +3,9 @@ import {BlogInputModelDto} from "../controllers/dto/blogInputModel.dto";
 
 
 export interface BlogsServiceInterface {
-    getAllBlogs: () => BlogViewModelDto[];
-    createNewBlog: (post: BlogInputModelDto) => BlogViewModelDto | undefined;
-    getBlogById: (id: string) => BlogViewModelDto | undefined;
-    editBlogById: (id: string, post:BlogInputModelDto) => boolean;
-    deleteBlogById: (id: string) => boolean;
+    getAllBlogs: () => Promise<BlogViewModelDto[]>;
+    createNewBlog: (post: BlogInputModelDto) => Promise<BlogViewModelDto | null>;
+    getBlogById: (id: string) =>Promise< BlogViewModelDto | null>;
+    editBlogById: (id: string, post:BlogInputModelDto) =>Promise<boolean>;
+    deleteBlogById: (id: string) =>Promise< boolean>;
 }

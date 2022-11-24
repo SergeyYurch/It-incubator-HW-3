@@ -3,7 +3,6 @@ import {BlogViewModelDto} from "../controllers/dto/blogViewModel.dto";
 import {BlogsServiceInterface} from "./blogs.service.interface";
 import {BlogInputModelDto} from "../controllers/dto/blogInputModel.dto";
 import {BlogEntity} from "./entities/blog.entity";
-import {BlogDbInterface} from "../repositories/repository.interface";
 import {BlogEditEntity} from "./entities/blog-edit.entity";
 
 const {
@@ -14,7 +13,7 @@ const {
     deleteBlogById
 } = repository;
 
-export const blogsService = {
+export const blogsService:BlogsServiceInterface = {
 
     getAllBlogs: async (): Promise<BlogViewModelDto[]> => {
         const blogsFromDb = await getAllBlogs();
