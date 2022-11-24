@@ -11,26 +11,26 @@ export const postsRouter = Router();
 const {validatePostInputModel, validateResult} = validatorMiddleware;
 const {deletePostById, getAllPosts, editPostById, getPostById, createNewPost} = postsService;
 
-postsRouter.get('/', (req: Request, res: Response) => {
-    const posts =  getAllPosts();
+postsRouter.get('/', async (req: Request, res: Response) => {
+    const posts =  await getAllPosts();
     return res.status(200).json(posts);
 });
 
-postsRouter.post('/', validatePostInputModel(),validateResult, (req: RequestWithBody<PostInputModelDto>, res: Response) => {
+postsRouter.post('/', validatePostInputModel(),validateResult,async (req: RequestWithBody<PostInputModelDto>, res: Response) => {
     const {title, shortDescription, content, blogId} = req.body;
-    const createdPost = createNewPost({title, shortDescription, content, blogId});
+    const createdPost = await createNewPost({title, shortDescription, content, blogId});
     return createdPost ? res.status(201).json(createdPost) : res.sendStatus(500);
 });
 
-postsRouter.get('/:id', (req: RequestWithId, res: Response) => {
+postsRouter.get('/:id', async (req: RequestWithId, res: Response) => {
     const id = req.params.id;
-    const result = getPostById(id);
+    const result = await getPostById(id);
     return result ? res.status(200).json(result) : res.sendStatus(404);
 });
 
-postsRouter.put('/:id', validatePostInputModel(), validateResult, (req: RequestWithIdAndBody<PostInputModelDto>, res: Response) => {
+postsRouter.put('/:id', validatePostInputModel(), validateResult,async (req: RequestWithIdAndBody<PostInputModelDto>, res: Response) => {
     const id = req.params.id;
-    if (!getPostById(id)) return res.sendStatus(404);
+    if (!(await getPostById(id))) return res.sendStatus(404);
     const body = req.body;
     const post: PostInputModelDto = {
         title: body.title,
@@ -38,12 +38,14 @@ postsRouter.put('/:id', validatePostInputModel(), validateResult, (req: RequestW
         content: body.content,
         shortDescription: body.shortDescription
     };
-    return editPostById(id, post) ? res.sendStatus(204) : res.sendStatus(404);
+    const result =await editPostById(id, post)
+    return  result? res.sendStatus(204) : res.sendStatus(404);
 });
 
-postsRouter.delete('/:id', (req: RequestWithId, res: Response) => {
+postsRouter.delete('/:id',async (req: RequestWithId, res: Response) => {
     const id = req.params.id;
-    if (!getPostById(id)) return res.sendStatus(404);
-    return deletePostById(id) ? res.sendStatus(204) : res.sendStatus(500);
+    if (!(await getPostById(id))) return res.sendStatus(404);
+    const result = await deletePostById(id)
+    return result ? res.sendStatus(204) : res.sendStatus(500);
 });
 
