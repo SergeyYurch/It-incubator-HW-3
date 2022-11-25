@@ -9,7 +9,7 @@ if (!mongoUri){
     throw new Error('!!!Mongo URI does not found')
 }
 const client = new MongoClient(mongoUri)
-const db = client.db('guildDB');
+const db = client.db();
 export const blogsCollection = db.collection<BlogEntity>('blogs')
 export const postsCollection = db.collection<PostEntity>('posts')
 
