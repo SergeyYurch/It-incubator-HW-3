@@ -1,8 +1,13 @@
 import {MongoClient} from 'mongodb';
 import {BlogEntity} from "../services/entities/blog.entity";
 import {PostEntity} from "../services/entities/post.entity";
+import * as dotenv from "dotenv";
+dotenv.config();
 
-const mongoUri = process.env.mongoURI || 'mongodb+srv://itkamadmin:1itkam26@cluster0.cq8g0m6.mongodb.net/?retryWrites=true&w=majority';
+const mongoUri = process.env.MONGO_URI
+if (!mongoUri){
+    throw new Error('!!!Mongo URI does not found')
+}
 const client = new MongoClient(mongoUri)
 const db = client.db('guildDB');
 export const blogsCollection = db.collection<BlogEntity>('blogs')
