@@ -1,8 +1,19 @@
-import {App} from "./app";
+import {app} from "./app";
+import {runDB} from "./repositories/db";
 
-function bootstrap() {
-    const app = new App();
-    app.init().then();
+const port = process.env.PORT ? +process.env.PORT : 5001;
+
+async function bootstrap() {
+    try {
+        await runDB();
+        app.listen(port, () => {
+            console.log(`[App] Server on post:${port} is start `);
+        });
+    } catch (err) {
+        console.error(err);
+        process.exit();
+    }
 }
 
-bootstrap();
+bootstrap().then();
+
