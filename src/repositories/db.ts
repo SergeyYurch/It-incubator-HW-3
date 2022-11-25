@@ -4,7 +4,6 @@ import {PostEntity} from "../services/entities/post.entity";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-
 const mongoUri = process.env.MONGO_URI
 if (!mongoUri){
     throw new Error('!!!Mongo URI does not found')
