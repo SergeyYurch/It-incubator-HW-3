@@ -1,8 +1,5 @@
 import request from 'supertest';
-import {App} from "../src/app";
-
-const app= new App()
-app.init().then();
+import {app} from "../src/app";
 
 const blog1 = {
     name: 'blog1',
